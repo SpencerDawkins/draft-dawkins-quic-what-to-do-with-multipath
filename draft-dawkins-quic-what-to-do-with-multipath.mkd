@@ -38,27 +38,9 @@ normative:
     target: https://www.3gpp.org/ftp/Specs/archive/23_series/23.700-93
 
 informative:
-  atsssliaison:
-    author:
-      - ins: 3GPP (3rd Generation Partnership Project)
-    title: LS on need for Multi-Path QUIC for ATSSS
-    date: Apr 2020
-    target: https://datatracker.ietf.org/liaison/1678/
-  I-D.bonaventure-quic-atsss-overview:
-  I-D.ietf-tcpm-converters:
-  RFC6459:
-  RFC8041:
-  I-D.deconinck-quic-multipath:
   I-D.ietf-quic-transport:
-  Hybrid:
-    author:
-      - ins: N. Keukeleire
-      - ins: B. Hesmans
-      - ins: O. Bonaventure
-    title: Increasing broadband reach with Hybrid Access Networks
-    seriesinfo: IEEE Communications and Standards Magazine, Vol. 4, Issue 1
-    date: March 2020
-    target: https://doi.org/10.1109/MCOMSTD.001.1900036
+  I-D.ietf-quic-datagram:
+  I-D.deconinck-quic-multipath:
   QUIC-charter:
     title: IETF QUIC Working Group Charter
     target: https://datatracker.ietf.org/wg/quic/about/
@@ -69,107 +51,85 @@ informative:
     
 --- abstract
 
-The IETF QUIC working group and the 3rd Generation Partnership Project (3GPP) have been trading liaison statements  about the possibility to use "Multipath QUIC" in the 3GPP Enhanced Access Traffic Steering, Switching, and Splitting (eATSSS) service. 
+The QUIC working group has been chartered to produce "enable ... multipath capabilities" since the working group was formed in 2016, but since multipath was one of the extensions that was in scope, work on multipath, and the other extensions named in the charter, waited while work proceeded on the core QUIC protocol specifications. 
 
-The initial IETF QUIC working group charter has including a QUIC extension providing "multipath capabilities" since 2016, but this extension took a back seat while the working group focused on initial QUIC deliverables. These initial deliverables were forwarded to the responsible area director in September 2020, and the working group scheduled an interim meeting to discuss next steps for multipath. 
+After the working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-During discussions prior to the interim meeting, it became increasingly obvious that a key point for discussion would be what was possible with the initial QUIC specifications ("QUICv1") and multiple paths, and what was only possible with a QUIC multipath extension. This document is a collection of capabilities that have been proposed in eATSSS. These capabilities are still under study, but provide a useful starting point, and other non-3GPP capabilities identified during can and should be added easily enough, since the QUIC working group is chartered to serve all QUIC users, not only those within 3GPP. 
+As part of that discussion, it became obvious that people had a variety of ideas for how multiple paths would be used. 
 
-This document is intended to inform discussion about multipath support for the QUIC protocol in the QUIC working group. 
+This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
 
 --- middle
 
 # Introduction {#intro}
 
-The IETF QUIC working group and the 3rd Generation Partnership Project (3GPP) have been trading liaison statements (for example, {{atsssliaison}}) about the possibility to use "Multipath QUIC" in the 3GPP Enhanced Access Traffic Steering, Switching, and Splitting (eATSSS) service {{TS23700-93}}. 
+The QUIC working group has been chartered to produce "enable ... multipath capabilities" ({{QUIC-charter}}) since the working group was formed in 2016, but since multipath was one of the extensions that was in scope, work on multipath, and the other extensions named in the charter, waited while work proceeded on the core QUIC protocol specifications ({{I-D.ietf-quic-transport}} and related specifications). 
 
-The initial IETF QUIC working group charter {{QUIC-charter}} has including a QUIC extension providing "multipath capabilities" since 2016, but this extension took a back seat while the working group focused on initial QUIC deliverables (generally speaking, {{I-D.ietf-quic-transport}} and related working group drafts). These initial deliverables were forwarded to the responsible area director in September 2020, and the working group scheduled an interim meeting to discuss next steps for multipath {{QUIC-interim-20-10}}. 
+After the working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting ({{QUIC-interim-20-10}}) to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-During discussions prior to {{QUIC-interim-20-10}}, it became increasingly obvious that a key point would be what was possible with the initial QUIC specifications ("QUICv1") and multiple paths, and what was only possible with a QUIC multipath extension. This document is a collection of capabilities that have been proposed in {{TS23700-93}}. These capabilities are still under study, but provide a useful starting point, and other non-3GPP capabilities identified during {{QUIC-interim-20-10}} can and should be added easily enough, since the QUIC working group is chartered to serve all QUIC users, not only those within 3GPP. 
+As part of that discussion, it became obvious that people had a variety of ideas for how multiple paths would be used. 
 
-This document is intended to inform discussion about multipath support for the QUIC protocol in the QUIC working group. 
+This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
 
 ## Notes for Readers
 
 This document is an informational Internet-Draft, not adopted by any IETF working group, and does not carry any special status within the IETF.
 
-It is also not an official representation from 3GPP - those would come through the formal liaison process. 
-
-This document abstracts considerable architectural detail that is available in 3GPP specifications. The goal is to make this summary of Enhanced ATSSS Phase 2 steering modes more accessible for IETF readers who are not familiar with 3GPP 5G architecture, and to help identify common desired capabilities in 3GPP and non-3GPP multipath usages. 
-
-The initial contents of this document reflects eATSSS modes of operation that are under consideration as of the 3GPP SA2#141-e meeting cycle, with the meeting held from 2020/10/12 to 2020/10/22. Note that this overlaps the dates for {{QUIC-interim-20-10}}, so this really is a race condition. 
-
 ## Contribution and Discussion Venues for this draft. 
 
 (Note to RFC Editor - if this document ever reaches you, please remove this section)
 
-This document is under development in the Github repository at draft-dawkins-quic-what-to-do-with-multipath.  Readers are invited to open issues and send pull requests with contributed text for this document.
+This document is under development in the Github repository at https://github.com/SpencerDawkins/draft-dawkins-quic-what-to-do-with-multipath.  Readers are invited to open issues and send pull requests with contributed text for this document.
 
 Substantial discussion of this document should take place on the QUIC working group mailing list (quic@ietf.org). Subscription and archive details are at https://www.ietf.org/mailman/listinfo/quic.
 
-# Introduction to Access Traffic Steering, Switching, and Splitting (ATSSS) Steering Modes {#intro2sm}
+# Multicast Modes of Operation {#intro2sm}
 
-3GPP ATSSS {{TS23501}} defines the following procedures {{TS23501}} that are applicable when multiple disjoint paths are available:
- 
-- Access Traffic Steering: selection of a path for a new data flow and the transfer of the traffic of that data flow over the selected access network. 
-- Access Traffic Switching: migration of all packets of an ongoing data flow from one path to another path. Only one path is in use at a time, but this still ensures session continuity. 
-- Access Traffic Splitting: forwarding the packets of a data flow across multiple paths simultaneously.
+This document uses some terminology from 3GPP ATSSS {Access Traffic Steering, Switch and Splitting, {{TS23501}}) and 3GPP eATSSS ((Enhanced ATSSS {{TS23700-93}} that are applicable when multiple disjoint paths are available. Note that these terms describe concepts that are not ATSSS-specific, and could apply to any multipath environment. 
 
-Enhanced ATSSS {{TS23700-93}} inherits these modes of operation. 
+Note: my apologies for the use of 3GPP terminology in this document. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
 
-A more complete high-level overview of ATSSS ia available in {{I-D.bonaventure-quic-atsss-overview}}. For the purposes of this document, it's enough to consider two QUIC endpoints with two disjoint paths between them, as shown in {{fig-arch}}, which is a further simplification from the reference architecture in {{I-D.bonaventure-quic-atsss-overview}}
+For the purposes of this document, it's enough to consider two QUIC endpoints (QUIC Host X and QUIC Host Y) with two disjoint paths between them (Access Net A and Access Net B), as shown in {{fig-arch}}.
 
 ## Reference Architecture {#ref-arch}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ........(Scope of Multipath Modes)........
-  .                                        .
-  .            ------------                .
-  .           /            \               .
-  .  +-------| Access Net A |--+           .
-  .  |        \            /   |           .
-  .  |         ------------    |           .
-  .  |                         |           .
-  .  |                         |           .
+               ------------                
+              /            \               
+     +-------| Access Net A |--+           
+     |        \            /   |           
+     |         ------------    |                        
  +---+--+                      |        +------+
  | QUIC |                      +--------| QUIC | 
  } Host |                               | Host |
  |  X   |                      +--------|  Y   |
  +---+--+                      |        +------+
-     |                         |
-     |                         |
      |         ------------    |
      |        /            \   |
      +-------| Access Net B |--+
               \            /
                ------------
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-arch title="Simplified Reference Architecture for QUIC Multipath"}
+{: #fig-arch title="Simplified Reference Architecture for QUIC Multipath Operation"}
 
-### Multipath modes that can be supported using QUICv1 transport
+## Multipath Modes of Operation That Can Be Supported Using Current QUIC Transport
 
-Note: my apologies for the use of 3GPP terminology from {{TS23501}} in this section. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
+{{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths between QUIC endpoints, as long as only one path is in active use at any given time. 
 
-{{I-D.ietf-quic-transport}} and related specifications support the use of multiple paths between QUICv1 endpoints, as long as only one path is in active use at any given time. 
+This level of support for multicast allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using connection migration.  
 
-In ATSSS, this level of support would allow Access Traffic Steering - the selection of a specific path - and Acess Traffic Switching - migration of traffic from one path to another. 
+- “Active-Standby”: The traffic associated with the matching flow will be forwarded via a specific path (the 'active path') and switched to another path (called 'standby path') when the active access is unavailable. 
 
-Specific example multipath modes would include 
+- “Smallest Delay”: The traffic associated with a specific flow will be forwarded via the access that presents the smallest RTT. 
 
-- “Active-Standby”: The traffic associated with the matching flow will be forwarded via a specific access (called 'active access') and switched to another access (called 'standby access') when the active access is unavailable. 
-- “Smallest Delay”: The traffic associated with the matching flow will be forwarded via the access that presents the smallest RTT. 
-- “Priority-based”: For this mode, accesses are assigned priority levels that indicate which access to be used first. Concretely, the traffic associated with the matching flow will be steered on the access with a high priority till congestion is detected, then the overflow will be forwarded over a low priority access. 
-
-### ### Multipath modes that cannot be supported using QUICv1 transport
-
-ATSSS Phase 2 carries the Phase 1 steering modes forward, but in addition, the following new steering modes are under consideration. 
+{{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic on multiple paths between QUIC endpoints simultaneously. 
 
 - “Load-Balancing”: The traffic associated with the matching flow will be distributed among the available access networks following a distribution ratio (e.g., 30% via a first access, 70% via a second access).
 
-- "Autonomous ”: The traffic associated with the matching flow will be forwarded via a specific access (called 'active access') and switched to another access (called 'standby access') when the active access is unavailable. 
+- “Priority-based”: For this mode, paths  are assigned priority levels that indicate which path will be used first. Concretely, the traffic associated with the matching flow will be steered on the path with a high priority till congestion is detected, then the overflow will be forwarded over a low priority access. 
 
-- "Autonomous steering mode with advanced PMF":
+- "Autonomous ”: 
 
 - "Redundant":
 
@@ -177,23 +137,19 @@ ATSSS Phase 2 carries the Phase 1 steering modes forward, but in addition, the f
 
 - "UE assisted":
 
-
 # IANA Considerations
 
 This document does not make any request to IANA.
 
 # Security Considerations
 
-Section 9 of {{RFC6459}} provides an overview of security considerations in 3GPP networks.
-ATSSS Phase 1 data plane security considerations are documented in Section 9 of {{I-D.ietf-tcpm-converters}}. 
+QUIC-specific security considerations are discussed in Section 21 of {{I-D.ietf-quic-transport}}. 
 
-This document discusses the use of QUIC (including Multipath QUIC) as an additional ATSSS steering method. QUIC-specific security considerations are discussed in Section 21 of {{I-D.ietf-quic-transport}}. 
+Section 6 of {{I-D.ietf-quic-datagram}} discusses security considerations specific to the use of the Unreliable Datagram Extension to QUIC.
 
 This document does not specify specific mechanisms to use QUIC as a tunneling protocol towards an ATSSS proxy, as the intention of this document is to provide an informational overview of the ongoing work in 3GPP on ATSSS to support non-TCP, rather than discussing a detailed solution. Nevertheless, this document cites candidate solutions to provide such tunneling service. Security considerations specific to these solutions are provided below.
 
-Multipath QUIC-specific security considerations can be found in Section 8 of {{I-D.deconinck-quic-multipath}}. 
-
-Section 6 of {I-D.ietf-quic-datagram} discusses security considerations specific to the use of the Unreliable Datagram Extension to QUIC.
+Some multipath QUIC-specific security considerations can be found in Section 8 of the individual draft {{I-D.deconinck-quic-multipath}}. 
 
 # Acknowledgements
 
