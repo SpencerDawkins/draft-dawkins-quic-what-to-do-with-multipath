@@ -170,7 +170,9 @@ When a sending host has more than one path available, the sending host may wish 
 
 {{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths between QUIC endpoints, as long as only one path is in active use at any given time. {{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic for a single connection on multiple paths between QUIC endpoints simultaneously. 
 
-This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection. 
+This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection, except for unordered datagram traffic {{I-D.ietf-quic-datagram}}. 
+
+One important output from the QUIC interim meeting was the recognition that "Traffic Switching" can be accomplished with much more agility than some participants recognized - if you open and validate two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. 
 
 ## Forwarding Strategies with Multiple Paths
 
@@ -178,7 +180,7 @@ During the QUIC virtual interim meeting, various presenters described various fo
 
 This section is an attempt to identify commonalities and gaps that may inform work on future multipath extensions for QUIC. 
 
-All of these forwarding strategies build on Traffic Steering - opening one or more connections, and then proceeding to use one connection, switch to another connection, or split traffic accross paths. For this reason, Traffic Steering isn't mentioned in the rest of this section. 
+All of these forwarding strategies build on Traffic Steering - opening one or more connections, and then proceeding to use one connection, switch to another connection, or split traffic across paths. For this reason, Traffic Steering isn't mentioned in the rest of this section. 
 
 ### Bandwidth Aggregation
 
@@ -186,11 +188,11 @@ Some environment allow the use of multiple paths simultaneously for significant 
 
 ### Trading Latency Versus Bandwidth
 
-Some applications require low latency, and others don't. So using a network path with lower latency for some connections, and using a different network path with higher bandwidth available for others. allows this strategy. Traffic Switching is sufficient for this, if measured path characteristics change enough to justify changing paths. {{Chromium-Multipath}} mentioned this strategy at the QUIC Interim Meeting.
+Some applications require low latency, and others don't. So using a network path with lower latency for some connections, and using a different network path with higher bandwidth available for others. allows this strategy. Traffic Switching is sufficient for this, if measured path characteristics change enough to justify changing paths. {{Chromium-Multipath}} mentioned this strategy at the QUIC Interim Meeting. {{Apple-Multipath}} is actually switching paths at sub-RTT rates.
 
 ### RTT Difference
 
-Not all multipath environments include paths with significant differences between path characteristics, but several do. If two or more paths have characteristics that are sufficiently close" - for example, they may have path RTTs that are almost equivalent - a sender may wish to use both paths as long as that's the case, and then adopt another forwarding strategy when measured path characteristics diverge. Traffic Splitting is required to support this strategy. {{Apple-Multipath}}, {{Sat-Terr-Multipath}}.{{Hybrid-Access-Multipath}}, and {{Multipath-3GPP-ATSSS}} all mentioned this strategy at the QUIC Interim Meeting.
+Not all multipath environments include paths with significant differences between path characteristics, but several do. If two or more paths have characteristics that are "sufficiently close" - for example, they may have path RTTs that are equivalent, from the application's point of view - a sender may wish to use both paths as long as that's the case, and then adopt another forwarding strategy when measured path characteristics diverge. Traffic Splitting is required to support this strategy. {{Apple-Multipath}}, {{Sat-Terr-Multipath}}.{{Hybrid-Access-Multipath}}, and {{Multipath-3GPP-ATSSS}} all mentioned this strategy at the QUIC Interim Meeting.
 
 ### Active-Standby
 
