@@ -1,8 +1,8 @@
 ---
 title: What To Do With Multiple Active Paths in QUIC
 abbrev: What To Do With QUIC Multipath
-docname: draft-dawkins-quic-what-to-do-with-multipath-00
-date: 2020-11-01
+docname: draft-dawkins-quic-what-to-do-with-multipath-01
+date:
 category: info
 
 ipr: trust200902
@@ -150,29 +150,37 @@ For the purposes of this document, it's enough to consider two QUIC endpoints (Q
 
 More than two paths are certainly possible - for example, two hosts that are connected by a satellite uplink/downlink path, and two different landline paths from different network providers. But I believe this simplified architecture is sufficient for discussion purposes. 
 
-## Forwarding When Multiple Paths Are Available 
+## Forwarding When Multiple Paths Are Available {#forwarding}
 
 This section uses  terminology from 3GPP ATSSS {Access Traffic Steering, Switch and Splitting, {{TS23501}}) to describe three different patterns of packer forwarding that are applicable when multiple disjoint paths are available. Note that these terms describe concepts that are not ATSSS-specific, and could apply to any multipath environment. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
 
 ### Traffic Steering
 
-When a sending host has more than one path available, a sending host will select a path to begin forwarding packets on. This can be described as Traffic Steering.
+When a sending host has a new "flow", and has more than one path available, a sending host will select a path to begin forwarding packets on. This can be described as Traffic Steering.
+
+Note that the selection of a path is "per-flow". Different flows may be steered onto different paths, but each flow will be forwarded on a single path. 
 
 ### Traffic Switching
 
-When a sending host has more than one path available and is using a single path, the sending host can stop using this path, and start using another path. This can be described as Traffic Switching. 
+When a sending host has more than one path available and is forwarding traffic  and is forwarding packets for a flow  on a single path, the sending host can stop using this path for this flow, and start using another path. This can be described as Traffic Switching. 
+
+Note that the selection of another path is also per-flow. A sender can switch a flow onto a different path, without switching any other flows to that path. 
 
 ### Traffic Splitting
 
-When a sending host has more than one path available, the sending host may wish to use both paths simultaneously. This can be described as Traffic Splitting. 
+When a sending host has more than one path available, the sending host may wish to use multiple paths simultaneously for a single flow. This can be described as Traffic Splitting. 
 
-### Traffic Steering, Traffic Switching, and Traffic Splitting in the Core QUIC Transport Protocol
+Note that splitting a flow onto multiple paths means that the forwarding decision would be made on a packet-by-packet basis. No guarantee of packet ordering across paths is assumed. 
 
-{{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths between QUIC endpoints, as long as only one path is in active use at any given time. {{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic for a single connection on multiple paths between QUIC endpoints simultaneously. 
+### Traffic Steering, Traffic Switching, and Traffic Splitting in the Core QUIC Transport Protocol and Datagram Extension
 
-This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection, except for unordered datagram traffic {{I-D.ietf-quic-datagram}}. 
+For the purposes of this document, assume that a "flow", a term used in {{forwarding}}, is equivalent to a QUIC connection.  
 
-One important output from the QUIC interim meeting was the recognition that "Traffic Switching" can be accomplished with much more agility than some participants recognized - if you open and validate two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. 
+{{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths for a connection between QUIC endpoints, as long as only one path is in active use at any given time. {{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic for a single connection on multiple paths between QUIC endpoints simultaneously. 
+
+This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection.
+
+One important output from the QUIC interim meeting was the recognition that "Traffic Switching" can be accomplished with much more agility than some participants recognized - if you open and validate two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. This would allow "Traffic Splitting" for unordered QUIC datagram packets {{I-D.ietf-quic-datagram}}. 
 
 ## Forwarding Strategies with Multiple Paths
 
@@ -227,6 +235,8 @@ Some multipath QUIC-specific security considerations can be found in Section 8 o
 I'd like to thank Lars Eggert and Lucas Pardue, the QUIC working group chairs, who called the QUIC virtual interim meeting on multipath.
 
 I'd also like to thank the presenters at the QUIC virtual interim, who put together valuable presentations on short notice. 
+
+Thanks to David Allen, for comments resulting in the clarification of Traffic Steering, Traffic Switching, and Traffic Splitting when these concepts are used in contexts outside 3GPP. 
 
 Many thanks to (your name could easily appear here) for reviews and comments. 
 
