@@ -22,7 +22,7 @@ author:
   role: editor
   email: spencerdawkins.ietf@gmail.com
 
-normative:
+informative:
   TS23501:
     author:
       - ins: 3GPP (3rd Generation Partnership Project)
@@ -129,7 +129,6 @@ For the purposes of this document, it's enough to consider two QUIC endpoints (Q
 ## Reference Architecture {#ref-arch}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
                ------------                
               /            \               
      +-------| Access Net A |--+           
@@ -148,11 +147,13 @@ For the purposes of this document, it's enough to consider two QUIC endpoints (Q
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-arch title="Simplified Reference Architecture for QUIC Multipath Operation"}
 
-More than two paths are certainly possible - for example, two hosts that are connected by a satellite uplink/downlink path, and two different landline paths from different network providers. But I believe this simplified architecture is sufficient for discussion purposes. 
+Some use cases limit themselves to two paths - for example, the use case described in {{Multipath-3GPP-ATSSS}} is limited to one 5G 3GPP access network and one non-3GPP access network. More than two paths are certainly possible - for example, two hosts that are connected by a satellite path, and two different landline paths from different network providers for redundancy. But I believe this simplified architecture is sufficient for discussion purposes. 
 
 ## Forwarding When Multiple Paths Are Available {#forwarding}
 
-This section uses  terminology from 3GPP ATSSS {Access Traffic Steering, Switch and Splitting, {{TS23501}}) to describe three different patterns of packer forwarding that are applicable when multiple disjoint paths are available. Note that these terms describe concepts that are not ATSSS-specific, and could apply to any multipath environment. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
+This section uses  terminology from 3GPP ATSSS {Access Traffic Steering, Switch and Splitting, {{TS23501}}) to describe three different patterns of packet forwarding that could be used when multiple disjoint paths are available. Note that these terms describe concepts that are not ATSSS-specific, and could apply to any multipath environment. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
+
+For the purpose of this document, a "flow" is "a set of packets that share an ordering constraint". 
 
 ### Traffic Steering
 
@@ -172,15 +173,17 @@ When a sending host has more than one path available, the sending host may wish 
 
 Note that splitting a flow onto multiple paths means that the forwarding decision would be made on a packet-by-packet basis. No guarantee of packet ordering across paths is assumed. 
 
-### Traffic Steering, Traffic Switching, and Traffic Splitting in the Core QUIC Transport Protocol and Datagram Extension
+Note that splitting a flow onto multiple paths, packet by packet, means that any ordering constraint must be provided by an upper layer metchanism. In {{TS23501}}, Multipath TCP {{RFC8684}} is used to provide that ordering constraint. 
 
-For the purposes of this document, assume that a "flow", a term used in {{forwarding}}, is equivalent to a QUIC connection.  
+### Traffic Steering, Traffic Switching, and Traffic Splitting in the Core QUIC Transport Protocol and Datagram Extension
 
 {{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths for a connection between QUIC endpoints, as long as only one path is in active use at any given time. {{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic for a single connection on multiple paths between QUIC endpoints simultaneously. 
 
 This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection.
 
-One important output from the QUIC interim meeting was the recognition that "Traffic Switching" can be accomplished with much more agility than some participants recognized - if you open and validate two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. This would allow "Traffic Splitting" for unordered QUIC datagram packets {{I-D.ietf-quic-datagram}}. 
+One important output from the QUIC interim meeting was the recognition that some participants view "Traffic Switching" as something like "protection switching" from an active path to a standby path, that doesn't happen often, while other participants view QUIC connection migration as a way of responding frequently to changing path conditions. This will be an important part of the conversation about multipath QUIC. 
+
+If a QUIC endpoint opens and validates two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. This would allow "Traffic Splitting" for unordered QUIC datagram packets {{I-D.ietf-quic-datagram}}, with an upper-layer mechanism providing flow ordering if that is needed. 
 
 ## Forwarding Strategies with Multiple Paths
 
@@ -188,15 +191,15 @@ During the QUIC virtual interim meeting, various presenters described various fo
 
 This section is an attempt to identify commonalities and gaps that may inform work on future multipath extensions for QUIC. 
 
-All of these forwarding strategies build on Traffic Steering - opening one or more connections, and then proceeding to use one connection, switch to another connection, or split traffic across paths. For this reason, Traffic Steering isn't mentioned in the rest of this section. 
-
-### Bandwidth Aggregation
-
-Some environment allow the use of multiple paths simultaneously for significant periods of time, because none of the paths are metered, so using all of the bandwidth on all of the paths simultaneously makes sense. Traffic Splitting is required to support this strategy. {{Alibaba-MPQUIC}} mentioned this strategy at the QUIC Interim Meeting.
+All of these forwarding strategies build on Traffic Steering - opening one or more connections for a new flow, and then proceeding to use one connection, switch to another connection, or split traffic across paths. For this reason, Traffic Steering isn't mentioned in the rest of this section. 
 
 ### Trading Latency Versus Bandwidth
 
 Some applications require low latency, and others don't. So using a network path with lower latency for some connections, and using a different network path with higher bandwidth available for others. allows this strategy. Traffic Switching is sufficient for this, if measured path characteristics change enough to justify changing paths. {{Chromium-Multipath}} mentioned this strategy at the QUIC Interim Meeting. {{Apple-Multipath}} is actually switching paths at sub-RTT rates.
+
+### Bandwidth Aggregation
+
+Some environment allow the use of multiple paths simultaneously for significant periods of time, because none of the paths are metered, so using all of the bandwidth on all of the paths simultaneously makes sense for bulk transfers. Traffic Splitting is required to support this strategy. {{Alibaba-MPQUIC}}, {{Hybrid-Access-Multipath}}, and {{Sat-Terr-Multipath}} mentioned this strategy at the QUIC Interim Meeting.
 
 ### RTT Difference
 
@@ -204,7 +207,7 @@ Not all multipath environments include paths with significant differences betwee
 
 ### Active-Standby
 
-The traffic associated with a specific flow will be forwarded via a specific path (the 'active path') and switched to another path (called 'standby path') when the active access is unavailable. Traffic Switching is sufficient to support this strategy. {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting. 
+The traffic associated with a specific flow will be forwarded via a specific path (the 'active path') and switched to another path (called 'standby path') when the active access is unavailable. Traffic Switching is sufficient to support this strategy. {{Alibaba-MPQUIC}} and {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting. 
 
 ### Load-Balancing
 
@@ -216,7 +219,7 @@ Paths are assigned priority levels that indicate which path will be used first. 
 
 ### Redundant
 
-Traffic is replicated over two or more paths to increase the probability that the traffic will arrive at the other host undamaged and usable. Redundant traffic may be used for all packets in a connection, or may only be used when measured network conditions indicate it should be used. Traffic Splitting is required to support this strategy. {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting. 
+Traffic is replicated over two or more paths to increase the probability that the traffic will arrive at the other host undamaged and usable. Redundant traffic may be used for all packets in a connection, or may only be used when measured network conditions indicate it should be used. Traffic Splitting is required to support this strategy. {{Apple-Multipath}} and {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting. 
 
 # IANA Considerations
 
@@ -236,7 +239,7 @@ I'd like to thank Lars Eggert and Lucas Pardue, the QUIC working group chairs, w
 
 I'd also like to thank the presenters at the QUIC virtual interim, who put together valuable presentations on short notice. 
 
-Thanks to David Allen, for comments resulting in the clarification of Traffic Steering, Traffic Switching, and Traffic Splitting when these concepts are used in contexts outside 3GPP. 
+Thanks to David Allan, for comments resulting in the clarification of Traffic Steering, Traffic Switching, and Traffic Splitting when these concepts are used in contexts outside 3GPP. 
 
 Many thanks to (your name could easily appear here) for reviews and comments. 
 
