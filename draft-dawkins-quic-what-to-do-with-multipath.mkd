@@ -153,7 +153,9 @@ Some use cases limit themselves to two paths - for example, the use case describ
 
 This section uses  terminology from 3GPP ATSSS {Access Traffic Steering, Switch and Splitting, {{TS23501}}) to describe three different patterns of packet forwarding that could be used when multiple disjoint paths are available. Note that these terms describe concepts that are not ATSSS-specific, and could apply to any multipath environment. If terminology more accessible to IETF QUIC working group participants presents itself, I'll change it.
 
-For the purpose of this document, a "flow" is "a set of packets that share an ordering constraint". 
+Please note that the relationship between "flows", "packets", and "datagrams" isn't entirely clear yet. In {{TS23501}}, a "flow" is defined as "a set of packets that share an ordering constraint", which maps reasonably well onto TCP bytestreams and correspondingly onto MP-TCP bytestreams, but the core QUIC transport mechanism {{I-D.ietf-quic-transport}} provides multiple bytesteams in a single connection, and leveraging QUIC streams seems to be a use case enabler, whether for redundantly sending overlapping ranges, for efficiently striping non-overlapping ranges for bandwidth, or for strict ordering.
+
+Further, with the QUIC datagram extension {{I-D.ietf-quic-datagram}}, DATAGRAM frames can be carried in a QUIC connection, but are not part of a stream and do not interact with in-order delivery within a stream. 
 
 ### Traffic Steering
 
@@ -179,11 +181,11 @@ Note that splitting a flow onto multiple paths, packet by packet, means that any
 
 {{I-D.ietf-quic-transport}} and related specifications support the selection and use of multiple paths for a connection between QUIC endpoints, as long as only one path is in active use at any given time. {{I-D.ietf-quic-transport}} and related specifications do not support forwarding traffic for a single connection on multiple paths between QUIC endpoints simultaneously. 
 
-This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting - the use of simultaneous paths for a single connection.
+This level of support for multipath allows Traffic Steering - the selection of a specific path - and Traffic Switching - migration of traffic from one path to another, using QUIC connection migration. It does not allow "Traffic Splitting" - the use of simultaneous paths for a single connection.
 
 One important output from the QUIC interim meeting was the recognition that some participants view "Traffic Switching" as something like "protection switching" from an active path to a standby path, that doesn't happen often, while other participants view QUIC connection migration as a way of responding frequently to changing path conditions. This will be an important part of the conversation about multipath QUIC. 
 
-If a QUIC endpoint opens and validates two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. This would allow "Traffic Splitting" for unordered QUIC datagram packets {{I-D.ietf-quic-datagram}}, with an upper-layer mechanism providing flow ordering if that is needed. 
+If a QUIC endpoint opens and validates two or more connections, no additional setup or signaling is required for a sender to switch paths - that can begin with the next packet queued for transmission. This would allow "Traffic Splitting" for unordered QUIC DATAGRAMs {{I-D.ietf-quic-datagram}}, with an upper-layer mechanism providing flow ordering if that is needed. 
 
 ## Forwarding Strategies with Multiple Paths
 
@@ -240,6 +242,8 @@ I'd like to thank Lars Eggert and Lucas Pardue, the QUIC working group chairs, w
 I'd also like to thank the presenters at the QUIC virtual interim, who put together valuable presentations on short notice. 
 
 Thanks to David Allan, for comments resulting in the clarification of Traffic Steering, Traffic Switching, and Traffic Splitting when these concepts are used in contexts outside 3GPP. 
+
+Thanks again to Lucas, for providing comments resulting in several clarifications on the mapping of Traffic Splitting onto QUIC protocol operation. 
 
 Many thanks to (your name could easily appear here) for reviews and comments. 
 
