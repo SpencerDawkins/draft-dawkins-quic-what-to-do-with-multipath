@@ -102,7 +102,7 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting ({{QUIC-interim-20-10}}) to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases. 
+As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases. From an architecturale point of view two main multipath scenarios emerged. The first seeing a high value in proxied environments like 3GPP ATSSS, the second being applied end-to-end on service level.
 
 This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
 
