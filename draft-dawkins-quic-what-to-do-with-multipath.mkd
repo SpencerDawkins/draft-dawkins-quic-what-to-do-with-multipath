@@ -128,7 +128,7 @@ This document is under development in the Github repository at https://github.co
 
 Substantial discussion of this document should take place on the QUIC working group mailing list (quic@ietf.org). Subscription and archive details are at https://www.ietf.org/mailman/listinfo/quic.
 
-# Multicast Modes of Operation {#intro2sm}
+# Multipath Modes of Operation {#intro2sm}
 
 For the purposes of this document, it's enough to consider two QUIC endpoints (QUIC Host X and QUIC Host Y) with two disjoint paths between them (Access Net A and Access Net B), as shown in {{fig-arch}}.
 
@@ -270,5 +270,4 @@ Many thanks to (your name could easily appear here) for reviews and comments.
 (Note to RFC Editor - if this document ever reaches you, please remove this section)
 
 Version -00: initial submission
-
 Version -01: updated for IETF 109 QUIC working group session
