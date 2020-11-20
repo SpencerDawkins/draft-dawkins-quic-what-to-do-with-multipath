@@ -34,6 +34,8 @@ informative:
   I-D.ietf-quic-datagram:
   I-D.deconinck-quic-multipath:
   I-D.bonaventure-iccrg-schedulers:
+  I-D.amend-iccrg-multipath-reordering
+  I-D.bonaventure-quic-atsss-overview
 
   RFC0793:
   RFC8684:
@@ -155,7 +157,7 @@ For the purposes of this document, it's enough to consider two QUIC endpoints (Q
 
 Some use cases limit themselves to two paths - for example, the use case described in {{Multipath-3GPP-ATSSS}} is limited to one 5G 3GPP access network and one non-3GPP access network. More than two paths are certainly possible - for example, two hosts that are connected by a satellite path, and two different landline paths from different network providers for redundancy. But I believe this simplified architecture is sufficient for discussion purposes. 
 
-Please note: as mentioned in {{intro}}, some readers will be thinking of an end-to-end QUIC connection between QUIC Host X and QUIC Host Y in {{fig-arch}}, while other readers will be thinking of QUIC Host Y as some sort of (explicit) transport proxy or tunnel endpoint. This document is only focused on the multiple paths between QUIC Host X and QUIC Host Y, in order to talk about classes of sending and strategies for sending over multiple paths. 
+Please note: as mentioned in {{intro}}, some readers will be thinking of an end-to-end QUIC connection between QUIC Host X and QUIC Host Y in {{fig-arch}}, while other readers will be thinking of QUIC Host Y as some sort of (explicit) transport proxy or tunnel endpoint, e.g. {{Multipath-3GPP-ATSSS}}. This document is only focused on the multiple paths between QUIC Host X and QUIC Host Y, in order to talk about classes of sending and strategies for sending over multiple paths. However, it might be that further implications arose from the motivation of end-to-end multipath or intermediary multipath. In particular the latter will additionally require, according to {{draft-bonaventure-quic-atsss-overview}}, QUIC datagram (unreliable transport) and tunneling support. While multipath traffic distribution strategies play a central role in multipath transport, multipath re-ordering strategies become additionally important for multipath over unreliable network protocols. Possible strategies to solve this are described in {{amend-iccrg-multipath-reordering}}. Another complexitiy, not in scope of this document, is the interaction betwenn multipath scheduling and QUIC stream traffic scheduling.
 
 ## Sending When Multiple Paths Are Available {#sending}
 
