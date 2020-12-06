@@ -1,7 +1,7 @@
 ---
-title: What To Do With Multiple Active Paths in QUIC
-abbrev: What To Do With QUIC Multipath
-docname: draft-dawkins-quic-what-to-do-with-multipath-02
+title: Questions for Multiple Paths In QUIC
+abbrev: QUIC Multipath Questions
+docname: draft-dawkins-quic-multipath-questions-00
 date:
 category: info
 
@@ -33,9 +33,13 @@ informative:
   I-D.ietf-quic-transport:
   I-D.ietf-quic-datagram:
   I-D.deconinck-quic-multipath:
+  I-D.an-multipath-quic:
+  I-D.an-multipath-quic-application-policy:
+  I-D.huitema-quic-mpath-option:
   I-D.bonaventure-iccrg-schedulers:
   I-D.amend-iccrg-multipath-reordering:
   I-D.bonaventure-quic-atsss-overview:
+  I-D.dawkins-quic-what-to-do-with-multipath:
 
   RFC0793:
   RFC8684:
@@ -87,6 +91,14 @@ informative:
       - ins: Spencer Dawkins / Mirja Kühlewind / Florin Baboescu / Hannu Flinck
     target: https://github.com/quicwg/wg-materials/blob/master/interim-20-10/Multipath%20in%203GPP%20ATSSS.pdf
     date: October 2020
+  Elephant-By-Touch:
+    target: https://en.wikipedia.org/wiki/Blind_men_and_an_elephant
+    title: "Wikipedia Page for Blind men and an elephant"
+    date: Retrieved December 2020
+  Udana-6-4:
+    target: https://en.wikipedia.org/wiki/Blind_men_and_an_elephant
+    title: "Udana 6:4 Sectarians (1) (Tittha Sutta)"
+    date: Retrieved December 2020
     
 --- abstract
 
@@ -94,7 +106,7 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases.
+As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how QUIC might use multiple paths. 
 
 This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
 
@@ -106,17 +118,23 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting ({{QUIC-interim-20-10}}) to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases. From an architectural point of view, two main multipath scenarios emerged. The first scenario was envisioned by people who were focused on end-to-end service, and the second scenario was envisioned by people who expected some sort of (explicit) intermediary, such as a transport proxy or tunnel endpoint, between the ultimate endpoints.
+As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how QUIC might use multiple paths.
 
-This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
+## A 2500-year Side Trip {#TouchTheElephant}
 
-For more details, please see the QUIC working group meeting minutes, at {{QUIC-interim-20-10-minutes}}, which include pointers to the video recording from the meeting, pointers to each presentation given, questions and answers after each presentation, and overall discussion following the presentations. 
+The story that might have been titled "The People Unable to See and the Elephant" {{Elephant-By-Touch}} in 2021, is from the Indian subcontinent, and is at least 2500 years old (it is recorded in the Buddhist text Udana 6.4 {{Udana-6-4}}). The story, which has spread widely throughout the world, is about people unable to see, who are brought before the king, and shown an elephant - but they only touched the part of the elephant they were each standing in front of, and then began to argue about what an elephant was like (in {{Udana-6-4}}. Their descriptions were that "an elephant is like" a jar, a basket, a plowshare, the pole of a plow, a granary, a post, a mortar, a pestle, or a broom.
+
+None were completely wrong (they had their hands on the part of the elephant they were right about), but none were completely right, either (an elephant was more than the parts they hand their hands on). And the king pointed to the monks of different sects who had been arguing about the teachings of the Buddha, and said, "they keep on arguing, quarreling, and disputing, wounding one another with weapons of the mouth, saying, ‘The teaching is like this, it’s not like that. The teaching is not like that, it’s like this.’”
+
+## Back to the Introduction
+
+Let us turn our attention from "describing an elephant", to "describing what multiple paths in QUIC might mean", arising out of the QUIC working group virtual interim meeting minutes, at {{QUIC-interim-20-10-minutes}}, which include pointers to the video recording from the meeting, pointers to each presentation given, questions and answers after each presentation, and on discussion that continued following the cirtual interim meeting the QUIC working group mailing list.
 
 ## Other Voices
 
-This document grew out of discussions in the QUIC working group, but there are other efforts working on multipath in both the IETF and the IRTF, and their work includes mentions of strategies for using multiple paths. I'll add this work as I find it, if that work is proposing a strategy that hasn't been mentioned in the QUIC discussion. In particular, strategies named in {{I-D.bonaventure-iccrg-schedulers}} have been included in {{strategies}}, in the current version of the draft. 
-
 ## Notes for Readers
+
+It cannot be emphasized enough that multiple proposals for "QUIC multipath" have been submitted to the IETF (at a minimum, {{I-D.an-multipath-quic}}, {{I-D.deconinck-quic-multipath}}, and {{I-D.huitema-quic-mpath-option}}. In this document, "QUIC multipath" means only "QUIC using multiple paths", and draws from the discussion on the QUIC working group mailing list, some of which has been guided by one or more of the current proposals. 
 
 This document is an informational Internet-Draft, not adopted by any IETF working group, and does not carry any special status within the IETF.
 
@@ -126,9 +144,7 @@ It reflects the author's understanding, and contributions that include improveme
 
 (Note to RFC Editor - if this document ever reaches you, please remove this section)
 
-This document is under development in the Github repository at https://github.com/SpencerDawkins/draft-dawkins-quic-what-to-do-with-multipath.  Readers are invited to open issues and send pull requests with contributed text for this document.
-
-Substantial discussion of this document should take place on the QUIC working group mailing list (quic@ietf.org). Subscription and archive details are at https://www.ietf.org/mailman/listinfo/quic.
+This document is under development in the Github repository at https://github.com/SpencerDawkins/draft-dawkins-quic-multipath-questions.  Readers are invited to open issues and send pull requests with contributed text for this document, but since the document is intended to guide discussion for the QUIC working group, substantial discussion of this document should take place on the QUIC working group mailing list (quic@ietf.org). Subscription and archive details are at https://www.ietf.org/mailman/listinfo/quic.
 
 # Multipath Modes of Operation {#intro2sm}
 
