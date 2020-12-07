@@ -1,6 +1,8 @@
-# What To Do With Multiple Active Paths in QUIC
+# Questions for Multiple Paths In QUIC
 
-This repository is used for a draft on the questions that have come up in discussions about multipath. The draft is .
+This repository is used for a draft on the questions that have come up in discussions about multipath. The draft is draft-dawkins-quic-multipath-questions.
+
+Issues and pull requests are welcomed here. Substantative discussion should happen on the QUIC working group mailing list, at quic@ietf.org. 
 
 From the Abstract:
 
@@ -8,8 +10,6 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how QUIC might use multiple paths. 
+As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how applications might use QUIC over multiple paths. 
 
-This document is intended to capture that variety of ideas, to inform further discussion in the working group. 
-
-Issues and pull requests are welcomed here. Substantative discussion should happen on the QUIC working group mailing list, at quic@ietf.org. 
+This document is intended to capture questions that have come up in discussions, with some suggested answers, to inform further discussion in the working group. 

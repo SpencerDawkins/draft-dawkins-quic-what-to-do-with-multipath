@@ -76,7 +76,7 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how QUIC might use multiple paths. 
+As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how applications might use QUIC over multiple paths. 
 
 This document is intended to capture questions that have come up in discussions, with some suggested answers, to inform further discussion in the working group. 
 
@@ -88,7 +88,9 @@ The IETF QUIC working group has been chartered to produce extensions that would 
 
 After the QUIC working group chairs requested publication for the core QUIC protocol specifications, they scheduled a virtual interim meeting ({{QUIC-interim-20-10}}) to understand the use cases that various groups inside and outside the IETF were envisioning for multipath with QUIC. 
 
-As part of that discussion, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how QUIC might use multiple paths.
+As part of that discussion, which continued on the QUIC working group mailing list and at IETF 109 {{QUIC-IETF-109-minutes}}, it became obvious that people had a variety of ideas about how multiple paths would be used, because they weren't looking at the same use cases, and so had different assumptions about how applications might use QUIC over multiple paths.
+
+This document is intended to capture questions that have come up in discussions, with some suggested answers, to inform further discussion in the working group. 
 
 ## A 2500-year Side Trip {#TouchTheElephant}
 
@@ -98,11 +100,21 @@ None were completely wrong (they had their hands on the part of the elephant the
 
 ## Back to the Introduction
 
-Let us turn our attention from "describing an elephant", to "describing what multiple paths in QUIC might mean", arising out of the QUIC working group virtual interim meeting minutes, at {{QUIC-interim-20-10-minutes}}, which include pointers to the video recording from the meeting, pointers to each presentation given, questions and answers after each presentation, on discussion that continued following the cirtual interim meeting the QUIC working group mailing list, and discussion during the QUIC working group session at IETF 109 {{QUIC-IETF-109-minutes}}.
+Let us turn our attention from "describing an elephant", to "describing what multiple paths in QUIC might mean", based on 
+
+- the QUIC working group virtual interim meeting minutes on multicast at {{QUIC-interim-20-10-minutes}}, which include pointers to the video recording from the meeting, pointers to each presentation given, questions and answers after each presentation, 
+
+- discussion that continued following the virtual interim meeting the QUIC working group mailing list, and 
+
+- discussion during the QUIC working group session at IETF 109 {{QUIC-IETF-109-minutes}}.
+
+We are not unable to see, but we can't agree on the shape of multipath for QUIC without understanding what other people are looking at.
 
 ## Notes for Readers
 
-It cannot be emphasized enough that multiple proposals for "QUIC multipath" have been submitted to the IETF (at a minimum, {{I-D.an-multipath-quic}}, {{I-D.deconinck-quic-multipath}}, and {{I-D.huitema-quic-mpath-option}}. In this document, "QUIC multipath" means only "QUIC using multiple paths", and draws from the discussion on the QUIC working group mailing list, some of which has been guided by one or more of the current proposals. 
+It cannot be emphasized enough that multiple proposals for "QUIC multipath" have been submitted to the IETF (at a minimum, {{I-D.an-multipath-quic}}, {{I-D.deconinck-quic-multipath}}, and {{I-D.huitema-quic-mpath-option}}), but none have been adopted by the working group as of this writing. 
+
+In this document, "QUIC multipath" means only "QUIC using multiple paths", and draws from the discussion on the QUIC working group mailing list, some of which has been guided by one or more of the current proposals. 
 
 This document does reuse some terminology from {{I-D.dawkins-quic-what-to-do-with-multipath}}, especially "Traffic Switching" and "Traffic Splitting", which are summarized in {{q-02}}. 
 
@@ -121,11 +133,14 @@ This document is under development in the Github repository at https://github.co
 We've had considerable discussion about the details of multipath implementation in QUIC, but it's worth starting out with a couple of metaquestions:
 
 - Do we need multipath in QUIC? (see {{mq-01}})
+
 - Do we already have multipath in QUIC? (see {{mq-02}})
 
 ## MQ-01 Do We Need Multipath in QUIC? {#mq-01}
 
-The most compelling explanation of the point of view that we don't need multipath is likely the {{Chromium-Multipath}} presentation given at {{QUIC-interim-20-10}}. The short summary of this presentation was that Google had included multipath in planning for their gQUIC implementation, but subsequently stopped working on this, choosing instead to focus on making connection migration work, given that this was what customers were asking for. As of the date of {{QUIC-interim-20-10}}, few if any implementations were using connection migration, which was defined in  {{I-D.ietf-quic-transport}}. So there was a well-supported point of view that the right thing to do was to get deployment experience with connection migration, and then see what use cases remain that could not be supported using connection migration. 
+The most compelling explanation of the point of view that we don't need multipath is likely the {{Chromium-Multipath}} presentation given at {{QUIC-interim-20-10}}. The short summary of this presentation was that Google had included multipath in planning for their gQUIC implementation, but subsequently stopped working on this, choosing instead to focus on making connection migration work, given that this was what customers were asking for. 
+
+As of the date of {{QUIC-interim-20-10}}, few if any implementations were using connection migration, which was defined in  {{I-D.ietf-quic-transport}}. So there was a well-supported point of view that the right thing to do was to get deployment experience with connection migration, and then see what use cases remain that could not be supported using connection migration. 
 
 Suggested answer to MQ-01: "Maybe". 
 
@@ -137,13 +152,13 @@ For some applications, yes, but this is highly application-dependent.
 
 The key point in discussion was that this level of support allows quick migration from one path to another (what {{I-D.dawkins-quic-what-to-do-with-multipath}} calls "traffic switching"}, but does not allow sustained simultaneous use of multiple paths (what {{I-D.dawkins-quic-what-to-do-with-multipath}} calls "traffic splitting"). Even for traffic switching, the QUIC implementation does not know the capacity of the path that the connection migrates to, and must learn it, and this means that a successful connection migration can lead to a detectable difference in performance if the migrated-from connection was carrying a significant amount of traffic. 
 
-Suggested answer to MQ-02: "For applications that will perform traffic switching, possibly so. For applications that perform traffic switching, no".
+Suggested answer to MQ-02: "For applications that will perform traffic switching, possibly so. For applications that perform traffic splitting, no".
 
 # Questions about Multipath in QUIC (#mpinq}
 
-Once QUIC working group discussion moves below the metaquestions in {{mqamp}}, questions remain.
+Once QUIC working group discussion moves beyond the metaquestions in {{mqamp}}, questions remain.
 
-Please note that this document assumes that the questions here are still fairly high-level. There have also been discussions about topics like whether a single number space is shared across paths, etc. that aren't included, even though they're important. 
+Please note that this document only includes questions that are high-level. There have also been discussions about topics like whether a single number space is shared across paths, etc. that aren't included, even though they're important. 
 
 ## Q-01 Is There One "Multipath"?
 
@@ -213,7 +228,7 @@ Suggested answer for Q-06: "It depends".
 
 We've noted a number of times that the most useful features of protocols won't be used if there is no way for an application to use them. 
 
-HTTP/2 priorities {{RFC7540}} was mentioned most frequently, but other features were mentioned. 
+HTTP/2 stream priorities {{RFC7540}} was mentioned frequently, but other features were mentioned. 
 
 We need a better understanding of the goals (see {{q-06}} to answer this question, but it's included in this document so we don't forget it. 
 
