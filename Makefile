@@ -1,7 +1,7 @@
 xml2rfc ?= xml2rfc
 kramdown-rfc2629 ?= kramdown-rfc2629
 
-drafts := draft-dawkins-quic-what-to-do-with-multipath.txt
+drafts := draft-dawkins-quic-multipath-questions.txt
 xml := $(drafts:.txt=.xml)
 mkd := $(drafts:.txt=.mkd)
 
