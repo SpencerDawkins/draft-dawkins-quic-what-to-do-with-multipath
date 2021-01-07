@@ -1,7 +1,7 @@
 ---
 title: What To Do With Multiple Active Paths in QUIC
 abbrev: What To Do With QUIC Multipath
-docname: draft-dawkins-quic-what-to-do-with-multipath-02
+docname: draft-dawkins-quic-what-to-do-with-multipath-latest
 date:
 category: info
 
@@ -36,6 +36,7 @@ informative:
   I-D.bonaventure-iccrg-schedulers:
   I-D.amend-iccrg-multipath-reordering:
   I-D.bonaventure-quic-atsss-overview:
+  I-D.dawkins-quic-multipath-questions:
 
   RFC0793:
   RFC8684:
@@ -213,7 +214,7 @@ The traffic associated with a specific flow will be sent via a specific path (th
 
 ### Trading Latency Versus Bandwidth
 
-Some applications require low latency, and others don't. So using a network path with lower latency for some connections, and using a different network path with higher bandwidth available for others. allows this strategy. Traffic Switching is sufficient for this, if measured path characteristics change enough to justify changing paths. {{Chromium-Multipath}} mentioned this strategy at the QUIC Interim Meeting. {{Apple-Multipath}} is actually switching paths at sub-RTT rates.
+Some applications require low latency, and others don't. So using a network path with lower latency for some connections, and using a different network path with higher bandwidth available for others. allows this strategy. Traffic Switching is sufficient for this, if measured path characteristics change enough to justify changing paths. {{Chromium-Multipath}} mentioned this strategy at the QUIC Interim Meeting. {{Apple-Multipath}} and {{Sat-Terr-Multipath}} are actually switching paths at sub-RTT rates.
 
 ### Bandwidth Aggregation/Load Balancing 
 
@@ -235,11 +236,19 @@ Paths are assigned priority levels that indicate which path will be used first. 
 
 ### Redundant
 
-Traffic is replicated over two or more paths to increase the probability that the traffic will arrive at the other host undamaged and usable. Redundant traffic may be used for all packets in a connection, or may only be used when measured network conditions indicate it should be used. Traffic Splitting is required to support this strategy. {{Apple-Multipath}} and {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting. 
+Traffic is replicated over two or more paths to increase the probability that the traffic will arrive at the other host undamaged and usable. Redundant traffic may be used for all packets in a connection, or may only be used when measured network conditions indicate it should be used. Traffic Splitting is required to support this strategy. {{Apple-Multipath}} and {{Multipath-3GPP-ATSSS}} mentioned this strategy at the QUIC Interim meeting, and Yunfei Ma confirmed in e-mail that {{Alibaba-MPQUIC}} also uses this strategy. 
 
 ### Combinations of Strategies
 
 As {{I-D.bonaventure-iccrg-schedulers}} points out, a scheduler can use a combination of strategies in sending decisions. For example, a scheduler might use load-balancing over three paths, but when one of the paths becomes unavailable, might switch to the two paths that are still available. 
+
+As Lucas Pardue pointed out in e-mail, some strategies may differentiate between "control plane" and "data plane" path selection. For example, an application might send stream data over one or more paths, but might send ACK traffic or retransmissions over a specific path, especially if the path characteristics vary significantly, as would be the case for satellite uplink/downlink stations connected by both higher-bandwidth Low Earth Orbit satellite paths and lower-bandwidth cellular or landline paths. 
+
+## Unified Field Theory of Path Selection {#uni-field}
+
+The strategies in {{strategies}} don't include all possible strategies, and it's worth noting that few of the presentations given at {{QUIC-interim-20-10}} shared a common set of even two or three strategies. Even {{Multipath-3GPP-ATSSS}} omitted some strategies under consideration in 3GPP because they were closely tied to 5G network architecture components. 
+
+It will be very helpful if we can look for a small number of simple concepts that would allow a small number of schedulers to meet most application requirements. The alternative - adding schedulers every time someone thinks of a new strategy - is too painful to contemplate. 
 
 # IANA Considerations
 
@@ -261,9 +270,15 @@ I'd also like to thank the presenters at the QUIC virtual interim, who put toget
 
 Thanks to David Allan, for comments resulting in the clarification of Traffic Steering, Traffic Switching, and Traffic Splitting when these concepts are used in contexts outside 3GPP. 
 
-Thanks again to Lucas, for providing comments resulting in several clarifications on the mapping of Traffic Splitting onto QUIC protocol operation. 
+Thanks again to Lucas, for providing comments resulting in several clarifications on the mapping of Traffic Splitting onto QUIC protocol operation, and for providing comments about control plane/data plane considerations. 
 
-Thanks to Markus Amend, for providing contributions and spotting a whopper of a typo!
+Thanks to Markus Amend, for providing contributions and spotting a whopper of a typo.
+
+Thanks to Yunfei Ma for reviewing my characterization of {{Alibaba-MPQUIC}}.
+
+Thanks to Joerg Deutschmann for reviewing my characterization of {{Sat-Terr-Multipath}}.
+
+Thanks to Christian Huitema for suggesting that we try to simplify the large and growing number of strategies described in {{strategies}} into a few simple concepts. This question should come up in QUIC working group discussion of multipath, and will be added to {{I-D.dawkins-quic-multipath-questions}} so the author doesn't forget that.
 
 Many thanks to (your name could easily appear here) for reviews and comments. 
 
